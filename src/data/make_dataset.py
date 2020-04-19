@@ -53,6 +53,3 @@ else:
         df = pd.read_pickle(file_path + "/../../data/interim/data.pickle")
     except FileNotFoundError:
         print("Pickle not created yet - run make_dataset.py")
-
-
-# %%

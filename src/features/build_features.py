@@ -2,8 +2,7 @@ import pandas as pd
 import os
 import sys
 import numpy as np
-import nltk
-import requests
+from func import *
 
 processed_path = os.path.dirname(__file__) + "/../../data/processed/data.pickle"
 interim_path = os.path.dirname(__file__) + "/../../data/interim/data.pickle"
@@ -117,46 +116,6 @@ name_party_dict = {
 }
 
 
-def stem(word_array):
-    stemmer = nltk.stem.SnowballStemmer("danish")
-
-    try:
-        return [stemmer.stem(word) for word in word_array]
-    except TypeError:
-        return []
-
-
-def read_txt_file(path_to_file):
-    f = open(path_to_file, "r")
-    words = f.read().splitlines()
-    f.close()
-
-    return words
-
-
-def get_stop_words():
-
-    path = os.path.dirname(__file__) + "/../../data/external/stopord.txt"
-    try:
-        stopwords = read_txt_file(path)
-    except FileNotFoundError:
-
-        print("Downloading stopwords from Github")
-        url = "https://gist.githubusercontent.com/berteltorp/0cf8a0c7afea7f25ed754f24cfc2467b/raw/305d8e3930cc419e909d49d4b489c9773f75b2d6/stopord.txt"
-        r = requests.get(url)
-        with open(path, "wb") as f:
-            f.write(r.content)
-        stopwords = read_txt_file(path)
-    return stopwords
-
-
-def remove_stop_words(words, stopwords):
-    try:
-        return [x for x in words if x not in stopwords]
-    except TypeError:
-        return []
-
-
 if __name__ == "__main__":
 
     interim_df = pd.read_pickle(interim_path)
@@ -191,11 +150,11 @@ if __name__ == "__main__":
     df["Regering"] = np.select(conditions, choices, default=None)
 
     # Splitting tekst into lists
-    df["Tekst"] = df["Tekst"].str.split("[! ,.\-_?()]+")
+    df["Tekst"].str.split("[^A-Za-zåøæØÅÆ1-9]+")
 
     # Stop-words
     print("Removing stop word (expect long time) ... ", end=" ")
-    df["Tekst"] = df["Tekst"].apply(remove_stop_words, stopwords=get_stop_words())
+    df["Tekst"] = df["Tekst"].apply(remove_words, stopwords=get_stop_words())
     print("Removing done!")
 
     # Stemming
@@ -211,5 +170,3 @@ if __name__ == "__main__":
 else:
 
     df = pd.read_pickle(processed_path)
-
-    #    dict(zip(*np.unique(df['Tekst'][0], return_counts=True)))
