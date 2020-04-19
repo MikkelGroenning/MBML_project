@@ -1,3 +1,4 @@
+
 import pandas as pd
 import os
 import sys
@@ -117,11 +118,10 @@ name_party_dict = {
 
 
 if __name__ == "__main__":
-
     interim_df = pd.read_pickle(interim_path)
     df = interim_df.copy()
 
-    #%% Building features
+    # Building features
     print("Building features...")
 
     # Filling party in missing observation
@@ -150,13 +150,13 @@ if __name__ == "__main__":
     df["Regering"] = np.select(conditions, choices, default=None)
 
     # Splitting tekst into lists
-    df["Tekst"].str.split("[^A-Za-zåøæØÅÆ1-9]+")
+    df["Tekst"] = df["Tekst"].str.split("[^A-Za-zåøæØÅÆ1-9]+")
 
     # Stop-words
     print("Removing stop word (expect long time) ... ", end=" ")
     df["Tekst"] = df["Tekst"].apply(remove_words, stopwords=get_stop_words())
     print("Removing done!")
-
+    #%%
     # Stemming
     print("Steming word (expect long time) ... ", end=" ")
     df["Tekst"] = df["Tekst"].apply(stem)
@@ -170,3 +170,5 @@ if __name__ == "__main__":
 else:
 
     df = pd.read_pickle(processed_path)
+
+
