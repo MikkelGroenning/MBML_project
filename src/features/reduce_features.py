@@ -12,7 +12,7 @@ if __name__ == "__main__":
 
     from build_features import df
 
-    df = df.head(1000)
+    df = df
 
     print(
         "Removing rows where formand, aldersformanden, midlertidig formand is speaking"
@@ -55,5 +55,6 @@ if __name__ == "__main__":
     df.to_pickle(processed_path)
     print("Done!")
 
+else:
 
-# %%
+    df = pd.read_pickle(processed_path)
