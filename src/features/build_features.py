@@ -154,7 +154,7 @@ def read_txt_file(path_to_file):
 
 def get_stop_words():
 
-    path_stop = Path.cwd()/Path(r"data/external/additional_word_to_be_removed.txt")
+    path_stop = Path.cwd()/Path(r"data/external/stopord.txt")
     path_add = Path.cwd()/Path(r"data/external/additional_word_to_be_removed.txt")
     try:
         stopwords = read_txt_file(path_stop)
