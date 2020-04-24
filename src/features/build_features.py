@@ -154,9 +154,10 @@ def read_txt_file(path_to_file):
 
 def get_stop_words():
 
-    path = Path.cwd()/Path(r"data/external/additional_word_to_be_removed.txt")
+    path_stop = Path.cwd()/Path(r"data/external/additional_word_to_be_removed.txt")
+    path_add = Path.cwd()/Path(r"data/external/additional_word_to_be_removed.txt")
     try:
-        stopwords = read_txt_file(path)
+        stopwords = read_txt_file(path_stop)
     except FileNotFoundError:
 
         print("Downloading stopwords from Github")
@@ -164,16 +165,12 @@ def get_stop_words():
         r = requests.get(url)
         with open(path, "wb") as f:
             f.write(r.content)
-        stopwords = read_txt_file(path)
-    return stopwords
+        stopwords = read_txt_file(path_stop)
+    
+    additional = read_txt_file(path_add)
 
+    return stopwords+additional
 
-def remove_stop_words(words, stopwords):
-
-    try:
-        return [x for x in words if x not in stopwords]
-    except TypeError:
-        return words
 
 
 if __name__ == "__main__":
