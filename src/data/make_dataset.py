@@ -4,7 +4,7 @@ import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-data_path = Path(__file__).parent / "../../data/interim/data.pickle"
+data_path = Path.cwd() / Path(r"data/interim/data.pickle")
 
 def tale_iterator( et, verbose = False ):
     current_meeting_id = None
@@ -37,7 +37,7 @@ if __name__ == '__main__':
     df = pd.DataFrame()
     
     #%% Reading data from each file, appending each 'Tale' entry to dataframe
-    for file in os.scandir( Path(__file__).parent / '../../data/raw/', ):
+    for file in os.scandir(Path.cwd() / Path(r'data/raw')):
         if file.path.endswith('.xml'):
             print(f"Processing file: {file.name}")
             et = ET.parse(file)
