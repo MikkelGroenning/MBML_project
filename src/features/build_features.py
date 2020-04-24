@@ -118,6 +118,7 @@ name_party_dict = {
 
 
 if __name__ == "__main__":
+    
     interim_df = pd.read_pickle(interim_path)
     df = interim_df.copy()
 

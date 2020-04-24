@@ -3,7 +3,7 @@ import pandas as pd
 import os
 import sys
 import numpy as np
-from func import *
+
 
 processed_path = os.path.dirname(__file__) + "/../../data/processed/reduced_data.pickle"
 
@@ -11,6 +11,7 @@ if __name__ == "__main__":
     path = os.path.dirname(__file__)
 
     from build_features import df
+    from func import *
 
     df = df
 
