@@ -4,7 +4,7 @@ setup(
     name='src',
     packages=find_packages(),
     version='0.1.0',
-    description='Case2 CDA',
-    author='Case2 Team Toke, Søren Ida and Mikkel',
+    description='MBML Project',
+    author='Toke, Anders Christian and Mikkel',
     license='MIT',
 )
