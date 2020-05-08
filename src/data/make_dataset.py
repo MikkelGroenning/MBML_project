@@ -1,20 +1,21 @@
+
 import pandas as pd
 import os
 import sys 
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-data_path = Path.cwd() / Path(r"data/interim/data.pickle")
+data_path = Path(__file__).parent / "../../data/interim/data.pickle"
 
 def tale_iterator( et, verbose = False ):
-    current_meeting_id = None
+    current_agenda_id = None
     missing_observations = 0
     found_observations = 0
 
     for element in et.iter():
         if element.tag == 'Tale':
             observation = {x.tag : x.text for x in element}
-            observation.update( { 'MeetingId' : current_meeting_id } )
+            observation.update( { 'Dagsordenpunkt' : current_agenda_id } )
 
             if not 'Tekst' in  observation or observation['Tekst'] is None:
                 missing_observations += 1
@@ -22,15 +23,13 @@ def tale_iterator( et, verbose = False ):
                 found_observations += 1
                 yield observation
 
-        elif element.tag == 'Møde':
-            try:
-                current_meeting_id = next( (x for x in element if x.tag == 'MeetingId') ).text 
-            except StopIteration:
-                raise Warning('No meeting category found')
+        elif element.tag == 'Dagsordenpunkt':
+            current_agenda_id = element.text
 
     if verbose:
         print('Successfully read %d speeches, found %d to be missing.' % \
             (found_observations, missing_observations))
+
 
 if __name__ == '__main__':
 

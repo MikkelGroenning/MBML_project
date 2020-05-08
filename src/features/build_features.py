@@ -10,10 +10,12 @@ import tqdm as tqdm
 import pickle
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.feature_extraction.text import CountVectorizer
+
 sys.path.append(str(Path(__file__).parent.resolve() / ".."))
+
 from data.make_dataset import df as interim_df
 
-processed_path = Path.cwd()/Path(r"data/processed")
+processed_path = Path.cwd() / Path(r"data/processed")
 
 # From https://stackoverflow.com/questions/36182502/add-stemming-support-to-countvectorizer-sklearn
 danish_stemmer = nltk.stem.SnowballStemmer("danish")
@@ -154,8 +156,7 @@ def read_txt_file(path_to_file):
 
 def get_stop_words():
 
-    path_stop = Path.cwd()/Path(r"data/external/stopord.txt")
-    path_add = Path.cwd()/Path(r"data/external/additional_word_to_be_removed.txt")
+    path = Path.cwd() / Path(r"data/external/additional_word_to_be_removed.txt")
     try:
         stopwords = read_txt_file(path_stop)
     except FileNotFoundError:
@@ -166,11 +167,10 @@ def get_stop_words():
         with open(path, "wb") as f:
             f.write(r.content)
         stopwords = read_txt_file(path_stop)
-    
+
     additional = read_txt_file(path_add)
 
-    return stopwords+additional
-
+    return stopwords + additional
 
 
 if __name__ == "__main__":
@@ -237,16 +237,16 @@ if __name__ == "__main__":
     X_tfidf = tfidf.fit_transform(X)
 
     print("Saving dataframe to pickle...")
-    df.to_pickle(processed_path/"data.pickle")
+    df.to_pickle(processed_path / "data.pickle")
 
     print("Saving vectorized data to pickle...")
     with open(str(processed_path / "vectorized.pickle"), "wb") as f:
         pickle.dump((vocabulary, X, X_tfidf), f)
-    
+
     print("Done! (Took %.2f seconds)" % (time.time() - t))
 
 else:
-    df = pd.read_pickle(processed_path/"data.pickle")
+    df = pd.read_pickle(processed_path / "data.pickle")
 
     with open(processed_path / "vectorized.pickle", "rb") as f:
         vocabulary, X, X_tfidf = pickle.load(f)

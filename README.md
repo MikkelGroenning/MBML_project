@@ -19,3 +19,9 @@ Project Organization
         ├── data           <- Scripts to download or generate data
             └── make_dataset.py
         
+
+Build enivorement
+
+
+conda env create -f environment.yml
+conda evn update
