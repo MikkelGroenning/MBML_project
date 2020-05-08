@@ -1,0 +1,21 @@
+name: mbml
+dependencies: 
+  - python=3.8.2
+  - numpy 
+  - pandas 
+  - matplotlib 
+  - nltk 
+  - scikit-learn 
+  - seaborn 
+  - jupyter 
+  - requests 
+  - tqdm
+  - nltk
+  - pip
+  - black
+  - pip:
+    - minisom
+    - wordcloud==1.7.0
+    - afinn
+    - fontTools
+    - "--editable ."
