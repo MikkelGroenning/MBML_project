@@ -245,16 +245,25 @@ if __name__ == '__main__':
     cancer = np.empty((df.Dagsordenpunkt.nunique(),X.shape[1]))
     for i, punkt in enumerate(df.Dagsordenpunkt.unique()):
         if (i % 732) == 0:
-            print(i/df.Dagsordenpunkt.nunique()*100, "%", end='')
+            print(i/df.Dagsordenpunkt.nunique()*100, "%", end=' ')
         
         try:
             cancer[i,:] = np.minimum(1,np.asarray(sum([s for s in tmp.loc[punkt].kage.values]).todense()).reshape(-1,))
         except AttributeError:
             cancer[i,:] = np.minimum(1,np.asarray(tmp.loc[punkt].kage.todense()).reshape(-1))
 
-
-    indexes = np.where(cancer.mean(axis=0) > 0.5)[0]
+    
+    indexes = np.where(cancer.mean(axis=0) > 0.4)[0]
     X = delete_cols_csr(X, indexes)
+
+    print("\nFixing vocabulary")
+    tmp = dict(sorted({v: k for k, v in vocabulary.items()}.items()))
+    for idx in indexes:
+        del tmp[idx]
+
+    vocabulary = {word: idx for idx, word in enumerate(list(tmp.values()))}
+
+
 
     print("Doing TD-IDF")
     tfidf = TfidfTransformer()
