@@ -24,4 +24,5 @@ Build enivorement
 
 
 conda env create -f environment.yml
+
 conda env update
