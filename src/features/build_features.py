@@ -264,17 +264,29 @@ if __name__ == '__main__':
     vocabulary = {word: idx for idx, word in enumerate(list(tmp.values()))}
 
 
-
     print("Doing TD-IDF")
     tfidf = TfidfTransformer()
     X_tfidf = tfidf.fit_transform(X)
+
+    
+    print("Creating corpus")
+    cx = scipy.sparse.coo_matrix(X)
+    corpus = [[] for _ in range(X.shape[0])]
+    for speech, col, data in zip(cx.row, cx.col, cx.data):
+        corpus[speech].append((col, data))
+
+    cx_tfidf = scipy.sparse.coo_matrix(X_tfidf)
+    corpus_tfidf = [[] for _ in range(X_tfidf.shape[0])]
+    for speech, col, data in zip(cx_tfidf.row, cx_tfidf.col, cx_tfidf.data):
+        corpus_tfidf[speech].append((col, data))
+
 
     print("Saving dataframe to pickle...")
     df.to_pickle( processed_path / "data.pickle")
 
     print("Saving vectorized data to pickle...")
     with open( processed_path / "vectorized.pickle", 'wb' ) as f:
-        pickle.dump( (vocabulary, X, X_tfidf), f )
+        pickle.dump( (vocabulary, X, X_tfidf, corpus, corpus_tfidf), f )
 
     print("Done! (Took %.2f seconds)" % (time.time() - t))
 
@@ -283,4 +295,4 @@ else:
     df = pd.read_pickle( processed_path / "data.pickle")
 
     with open(processed_path / "vectorized.pickle", 'rb') as f:
-        vocabulary, X, X_tfidf = pickle.load(f)
+        vocabulary, X, X_tfidf, corpus, corpus_tfidf = pickle.load(f)
