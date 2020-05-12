@@ -45,8 +45,8 @@ if __name__ == '__main__':
     #%% Proper datatypes, sorting
 
     print('Sorting data according to time...', end=' ')
-    df['Starttid'] = pd.to_datetime(df['Starttid'])
-    df['Sluttid'] = pd.to_datetime(df['Sluttid'])
+    df['Starttid'] = pd.to_datetime(df['Starttid']).date()
+    df['Sluttid'] = pd.to_datetime(df['Sluttid']).date()
     print('Done!')
 
     df.sort_values('Starttid', inplace=True)
