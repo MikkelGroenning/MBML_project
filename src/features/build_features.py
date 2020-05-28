@@ -1,6 +1,7 @@
-#%%
+
 import pandas as pd
 import os
+import re
 import sys
 import numpy as np
 import nltk
@@ -149,7 +150,7 @@ def stem(word_array):
 
 def read_txt_file(path_to_file):
 
-    f = open(path_to_file, "r")
+    f = open(path_to_file, "r", encoding='utf-8')
     words = f.read().splitlines()
     f.close()
 
@@ -171,7 +172,7 @@ def get_stop_words():
     except FileNotFoundError:
 
         print("Downloading stopwords from Github")
-        url = "https://gist.githubusercontent.com/berteltorp/0cf8a0c7afea7f25ed754f24cfc2467b/raw/305d8e3930cc419e909d49d4b489c9773f75b2d6/stopord.txt"
+        url = "https://raw.githubusercontent.com/MikkelGroenning/MBML_project_generate_data/master/stopord.txt"
         r = requests.get(url)
         with open(path, "wb") as f:
             f.write(r.content)
@@ -202,6 +203,21 @@ def delete_cols_csr(mat, indices):
     mask[indices] = False
     return mat[:, mask]
 
+
+def textprocessing(text):
+    stemmer = danish_stemmer
+    # Remove unwanted characters
+    re_sp= re.sub(r'[^\w\s]'," ",text.lower())
+    # Remove single characters
+    no_char = ' '.join( [w for w in re_sp.split() if len(w)>1]).strip()
+    # Removing Stopwords
+    stoplist = set((" ".join(read_txt_file(r"data/external/stopord.txt"))).split())
+    filtered_sp = [w for w in no_char.split(" ") if not w in stoplist]
+    # Perform Stemming
+    stemmed_sp = [stemmer.stem(item) for item in filtered_sp]
+    # Converting it to string
+    stemmed_sp = ' '.join([x for x in stemmed_sp])
+    return stemmed_sp
 
 #%%
 if __name__ == "__main__":
@@ -266,9 +282,13 @@ if __name__ == "__main__":
 
     # Vectorizing speeches
     print("Vectorizing speeches...")
-    vectorizer = StemmedCountVectorizer(
-        min_df=10, analyzer="word", stop_words=get_stop_words()
+    get_stop_words()
+    df = df.assign(Tekst=df.loc[:,'Tekst'].apply(lambda x: textprocessing(str(x))))
+
+    vectorizer = CountVectorizer(
+        min_df = 50, analyzer="word"
     )
+
     X = vectorizer.fit_transform(df["Tekst"])
     vocabulary = vectorizer.vocabulary_
 
